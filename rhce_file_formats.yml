@@ -1,0 +1,216 @@
+# Inventory file formats
+
+[group1]
+web[1:9].example.com
+web12.example.com
+
+[group2]
+file1.example.com
+file2.example.com
+
+[group3]
+webservers
+fileservers
+
+# anisble.cfg
+---
+[defaults]
+inventory - Sets default settings
+remote_user - name of the user that longs in on the remote hosts
+ask_pass - specifiies whether or not to prompt for a password
+collections_path = <./collections:/> - specifies collections path
+roles_path = <./roles> - specifies roles path
+
+[privilege_escalation]
+become - sets how to become the other user
+become_user - speci fies the target remote user
+become_ask_pass - sets if a password should be asked for when escalating.
+
+
+# ansible-navigator file
+---
+ansible-navigator:
+    execution-environment:
+        image:
+        pull:
+            policy: missing
+        playbook-artifact:
+            enable: false
+
+
+
+---
+# Playbook metadata
+- name: name of the playbook
+  hosts: host names from the inventory  # Define target hosts from inventory, localhosts works on local machines
+  gather_facts: yes/no  # Decide whether to gather facts (default: yes)
+  ignore_errors: yes/no  # Ignore errors in tasks (default: no)
+  force_handlers: yes/no  # Force handlers to run when a task is notified
+  check_mode: yes/no # Force check mode
+  
+  pre-tasks:
+  - name: name of the task
+    modulename:
+      attribute: value
+
+  roles:
+    - role 1
+      message: parameters
+    - role 2
+
+
+  # Variables
+  vars:
+    variable_name: value  # Define variables here
+
+  vars_prompt:
+    - name: value
+      prompt: prompt # prompt presented to the user for input
+      private: yes/no # yes hides the input
+      confirm: yes/no # yes asks the suer to confirm their input
+      default: value # specifies default value if no value is entered
+
+  vars_files:
+    - path_to_variable_file  # Load variables from external file(s)
+
+  host_vars:
+    - host_name_from_inventory.yml  # Host-specific variable file
+
+  group_vars:
+    - group_name_from_inventory.yml  # Group-specific variable file
+
+  tasks:
+    # Block of tasks
+    - name: setting up a block
+      block:
+        - name: name of first task
+          module_name_used:
+            attribute: value  # Module attributes go here
+
+        - name: name of second task with loop
+          module_name_used:
+            attribute1: value1
+            attribute2: "{{ item }}"  # Loop variable
+          loop:
+            - item1  # Loop items
+            - item2
+
+        - name: import a role at initial parse
+          import_role:
+            name: role_name
+        
+        - name: dynamically import a role
+          include_role:
+            name: role_name
+
+      # Error handling (rescue block)
+      rescue:
+        - name: alternative tasks in case of failure
+          module_name_used:
+            attribute: value  # Attributes of the alternative task
+          failed_when: condition_to_fail  # Define fail condition
+          notify: handler_name  # Notify a handler in case of failure
+
+      # Always executed tasks
+      always:
+        - name: tasks that will always be executed
+          module_name_used:
+            attribute: value  # Define attributes for this task
+          when: condition_to_run  # Conditional execution
+
+  post-tasks:
+  - name: name of the task
+    modulename:
+      attribute: value
+
+  # Handlers: Tasks triggered by notify
+  handlers:
+    - name: handler_name
+      module_name_used:
+        attribute: value  # Attributes for the handler task
+
+
+
+---
+# Jinja2 Template Guide
+
+# Variable substitution
+{{ variable_name }}  # Outputs the value of a variable
+
+# Filters for variable modification
+{{ variable_name | default('default_value') }}  # Uses a default value if variable is undefined
+{{ variable_name | upper }}  # Converts the variable to uppercase
+{{ variable_name | lower }}  # Converts the variable to lowercase
+
+# Conditional statements
+{% if condition %}
+  # Code to execute if the condition is true
+  {{ variable_name }}
+{% elif another_condition %}
+  # Code for an alternate condition
+  {{ another_variable }}
+{% else %}
+  # Code to execute if none of the above conditions are met
+{% endif %}
+
+# Loop structure
+{% for item in list_variable %}
+  # Loop content
+  {{ item }}
+{% endfor %}
+
+# Nested loop example
+{% for key, value in dictionary_variable.items() %}
+  Key: {{ key }}
+  Value: {{ value }}
+  {% for sub_item in value %}
+    Sub-item: {{ sub_item }}
+  {% endfor %}
+{% endfor %}
+
+# Commenting (not rendered in the output)
+{# This is a Jinja2 comment #}
+
+# Setting variables within the template
+{% set my_variable = "some_value" %}
+
+# Including other templates (for reusable components)
+{% include 'path_to_another_template.j2' %}
+
+# Macro definition (for reusable blocks)
+{% macro macro_name(param1, param2) %}
+  This is a macro. Parameter 1 is {{ param1 }} and Parameter 2 is {{ param2 }}
+{% endmacro %}
+
+# Using a macro
+{{ macro_name('value1', 'value2') }}
+
+# Loop with index (useful for enumerating)
+{% for item in list_variable %}
+  {{ loop.index }} - {{ item }}  # Outputs the index (1-based) and item
+{% endfor %}
+
+# Loop with conditionals
+{% for item in list_variable %}
+  {% if loop.first %}
+    # Code for the first iteration
+  {% elif loop.last %}
+    # Code for the last iteration
+  {% else %}
+    # Code for all other iterations
+  {% endif %}
+{% endfor %}
+
+# Template inheritance (useful for defining a base template)
+{% extends "base_template.j2" %}
+
+{% block block_name %}
+  Content to override in the block
+{% endblock %}
+
+
+---
+#role files
+- name: name of the role
+  modulename:
+    attribute: value

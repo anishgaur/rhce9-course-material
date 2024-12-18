@@ -1,0 +1,4 @@
+- `/etc/ansible/hosts`: Default location for inventory files
+- `/etc/ansible/ansible.cfg` : Ansible config file
+- `~/.ansible/collections:/usr/share/anisble/collections`: Default collections path. 
+- `/etc/ansible/facts.d` : Location for custom facts to be stored.
