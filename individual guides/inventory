@@ -1,0 +1,11 @@
+[group1]
+web[1:9].example.com
+web12.example.com
+
+[group2]
+file1.example.com
+file2.example.com
+
+[group3]
+webservers
+fileservers

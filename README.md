@@ -4,8 +4,7 @@ The performance-based Red Hat Certified Engineer (RHCE) exam (EX294) tests your 
 
 As an RHCE exam candidate, you should be able to handle all responsibilities expected of a Red Hat Certified System Administrator, including these tasks:
 
-Be able to perform all tasks expected of a Red Hat Certified System Administrator
-
+- Be able to perform all tasks expected of a Red Hat Certified System Administrator
 - Understand and use essential tools
 - Understand core components of Ansible
 - Use roles and Ansible Content Collections
