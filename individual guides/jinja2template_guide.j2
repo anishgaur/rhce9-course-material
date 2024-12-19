@@ -1,0 +1,77 @@
+---
+# template guide outlining various Jinja2 syntax and features
+
+# Variable substitution
+{{ variable_name }}  # Outputs the value of a variable
+
+# Filters for variable modification
+{{ variable_name | default('default_value') }}  # Uses a default value if variable is undefined
+{{ variable_name | upper }}  # Converts the variable to uppercase
+{{ variable_name | lower }}  # Converts the variable to lowercase
+
+# Conditional statements
+{% if condition %}
+  # Code to execute if the condition is true
+  {{ variable_name }}
+{% elif another_condition %}
+  # Code for an alternate condition
+  {{ another_variable }}
+{% else %}
+  # Code to execute if none of the above conditions are met
+{% endif %}
+
+# Loop structure
+{% for item in list_variable %}
+  # Loop content
+  {{ item }}
+{% endfor %}
+
+# Nested loop example
+{% for key, value in dictionary_variable.items() %}
+  Key: {{ key }}
+  Value: {{ value }}
+  {% for sub_item in value %}
+    Sub-item: {{ sub_item }}
+  {% endfor %}
+{% endfor %}
+
+# Commenting (not rendered in the output)
+{# This is a Jinja2 comment #}
+
+# Setting variables within the template
+{% set my_variable = "some_value" %}
+
+# Including other templates (for reusable components)
+{% include 'path_to_another_template.j2' %}
+
+# Macro definition (for reusable blocks)
+{% macro macro_name(param1, param2) %}
+  This is a macro. Parameter 1 is {{ param1 }} and Parameter 2 is {{ param2 }}
+{% endmacro %}
+
+# Using a macro
+{{ macro_name('value1', 'value2') }}
+
+# Loop with index (useful for enumerating)
+{% for item in list_variable %}
+  {{ loop.index }} - {{ item }}  # Outputs the index (1-based) and item
+{% endfor %}
+
+# Loop with conditionals
+{% for item in list_variable %}
+  {% if loop.first %}
+    # Code for the first iteration
+  {% elif loop.last %}
+    # Code for the last iteration
+  {% else %}
+    # Code for all other iterations
+  {% endif %}
+{% endfor %}
+
+# Template inheritance (useful for defining a base template)
+{% extends "base_template.j2" %}
+
+{% block block_name %}
+  Content to override in the block
+{% endblock %}
+

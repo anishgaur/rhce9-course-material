@@ -19,6 +19,9 @@ Be able to perform all tasks expected of a Red Hat Certified System Administrato
 As with all Red Hat performance-based exams, configurations must persist after reboot without intervention.
 
 This repository contains the following files
-- rhce_commands.md : This contains a list of commanly used commands that one needs to be familiar with while prepping for the the RHCE exam. 
-- rhce_file_formats.yml : This contains the structure for most files that one needs to be familiar with.
-- rhce_file_locations : This contains the location of important files and directories.
+- rhce_commands.md : This contains a list of commonly used commands that one needs to be familiar with while prepping for the RHCE exam.
+- rhce_file_locations.md : This contains the location of important files and directories.
+- ansible.cfg : A configuration file for Ansible, defining the most commonly used settings for the RHCE examination prep.
+- inventory : An Ansible inventory file that lists managed nodes and groups.
+- jinja2template_guide.j2 : A Jinja2 template file used in Ansible playbooks for templating tasks.
+- playbook_guide.yml : An example Ansible playbook to guide the structure and usage of playbooks.

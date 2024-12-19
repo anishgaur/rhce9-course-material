@@ -1,0 +1,89 @@
+---
+# structured like an ansible playbook, this guide attempts to show the most commonly used playbook elements for the RHCE examination
+- name: name of the playbook
+  hosts: host names from the inventory  # Define target hosts from inventory, localhosts works on local machines
+  gather_facts: yes/no  # Decide whether to gather facts (default: yes)
+  ignore_errors: yes/no  # Ignore errors in tasks (default: no)
+  force_handlers: yes/no  # Force handlers to run when a task is notified
+  check_mode: yes/no # Force check mode
+  
+  pre-tasks:
+  - name: name of the task
+    modulename:
+      attribute: value
+
+  roles:
+    - role 1
+      message: parameters
+    - role 2
+
+
+  # Variables
+  vars:
+    variable_name: value  # Define variables here
+
+  vars_prompt:
+    - name: value
+      prompt: prompt # prompt presented to the user for input
+      private: yes/no # yes hides the input
+      confirm: yes/no # yes asks the suer to confirm their input
+      default: value # specifies default value if no value is entered
+
+  vars_files:
+    - path_to_variable_file  # Load variables from external file(s)
+
+  host_vars:
+    - host_name_from_inventory.yml  # Host-specific variable file
+
+  group_vars:
+    - group_name_from_inventory.yml  # Group-specific variable file
+
+  tasks:
+    # Block of tasks
+    - name: setting up a block
+      block:
+        - name: name of first task
+          module_name_used:
+            attribute: value  # Module attributes go here
+
+        - name: name of second task with loop
+          module_name_used:
+            attribute1: value1
+            attribute2: "{{ item }}"  # Loop variable
+          loop:
+            - item1  # Loop items
+            - item2
+
+        - name: import a role at initial parse
+          import_role:
+            name: role_name
+        
+        - name: dynamically import a role
+          include_role:
+            name: role_name
+
+      # Error handling (rescue block)
+      rescue:
+        - name: alternative tasks in case of failure
+          module_name_used:
+            attribute: value  # Attributes of the alternative task
+          failed_when: condition_to_fail  # Define fail condition
+          notify: handler_name  # Notify a handler in case of failure
+
+      # Always executed tasks
+      always:
+        - name: tasks that will always be executed
+          module_name_used:
+            attribute: value  # Define attributes for this task
+          when: condition_to_run  # Conditional execution
+
+  post-tasks:
+  - name: name of the task
+    modulename:
+      attribute: value
+
+  # Handlers: Tasks triggered by notify
+  handlers:
+    - name: handler_name
+      module_name_used:
+        attribute: value  # Attributes for the handler task
