@@ -1,0 +1,59 @@
+LAB 2-1
+Set up an Ansible environment according to the directions in this chapter. Make sure this environment meets the following requirements:
+• Three hosts are used: control.example.com, ansible1.example.com, and ansible2.example.com.
+• A user named ansible is created on all hosts.
+• On ansible1 as well as ansible2, the ansible user is allowed to run root commands using sudo, without being required to enter a password.
+• User ansible can log in to ansible1 and ansible2 using ssh, based on passphrase-less private keys.
+• The ansible software is installed on control.
+
+Three machines were set up in VMWare
+    control.example.com
+    ansible1.example.com
+    ansible2.example.com
+User student was created as the admin account on all 3 machines
+Static ipv4 addresses were set using nmtui though the same can be done using nmcli command.
+ipv4 addresses are added to the /etc/hosts file including the fqdn and the short name for the nodes.
+
+Since the exam is concerned with the end result more than the how it was achieved, I deviated slightly from the instructions
+
+host: control
+    useradd ansible
+    ehco "designated_password" | passwd --stdin ansible
+    su - ansible
+        ssh-keygen
+        ssh-copy-id student@ansible1
+        ssh-copy-id student@ansible2
+        dnf install ansible-core -y
+        touch inventory
+        echo "ansible1" > inventory
+        echo "ansible2" >> inventory
+        ansible -i inventory all -k -b -K -u student -m user -a "user = ansible"
+        ansible -i inventory all -k -b -K -u student -m shell -a "echo 'designated_password' | passwd --stdin ansible"
+        touch /etc/sudoers.d/ansible
+        echo "ansible   ALL=(ALL)   NOPASSWD: ALL" > /etc/sudoers.d/ansible
+        ansible -i inventory all -k -b -K -u student -m copy -a "content='ansible ALL=(ALL) NOPASSWD: ALL' dest='/etc/sudoers.d/ansible'" -v
+        ssh-keygen
+        ssh-copy-id -i saved_key_name ansible@ansible1
+        ssh-copy-id -i saved_key_name ansible@ansible2
+        ansible -i inventory all -m ping
+
+Breakdown:
+On the control node (control.example.com), the following steps were performed to set up the Ansible environment:
+
+User Setup:
+    The ansible user was created with a designated password.
+    SSH key-based authentication was established for the student user on ansible1 and ansible2 to enable initial remote administration.
+
+Ansible Installation and Inventory Creation:
+    ansible-core was installed on the control node.
+    An inventory file was created, listing ansible1 and ansible2 as target hosts.
+
+Remote User and Sudo Configuration:
+    Using the student user, the ansible user was created on the remote nodes via Ansible modules.
+    The ansible user password was set, and the necessary sudo privileges (passwordless root access) were configured on the remote nodes.
+
+Final SSH Key Configuration:
+    SSH keys for the ansible user on the control node were copied to the ansible accounts on the remote nodes for passphrase-less access.
+
+Validation:
+    The setup was verified by running an ansible ping command to confirm successful communication with the remote nodes.
