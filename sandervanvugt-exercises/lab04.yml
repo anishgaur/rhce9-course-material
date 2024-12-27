@@ -1,0 +1,37 @@
+---
+# Lesson 4 Lab: Writing a Playbook
+#   Write a playbook that installs the httpd package on ansible2.
+#   Ensure that it is started and that the firewall is opened to allow access to it.
+#   Also create a file /var/www/html/index.html with some welcome text.
+#   Lastly, write a playbook that will undo all modifications.
+- name: lab04
+  hosts: ansible2
+  tasks:
+    - name: installs httpd package on ansible2
+      dnf:
+        name: 
+          - httpd
+          - firewalld
+        state: present
+
+    - name: starting httpd service
+      service:
+        name: httpd
+        state: started
+
+    - name: starting the firewalld service
+      service:
+        name: firewalld
+        state: started
+
+    - name: allowing httpd through the firewall
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: creating index.html with welcome text
+      copy:
+        content: "Test"
+        dest: /var/www/html/index.html
