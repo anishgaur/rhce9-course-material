@@ -6,6 +6,7 @@
 #   Lastly, write a playbook that will undo all modifications.
 - name: lab04
   hosts: ansible2
+  gather_facts: no
   tasks:
     - name: installs httpd package on ansible2
       dnf:
@@ -35,3 +36,14 @@
       copy:
         content: "Test"
         dest: /var/www/html/index.html
+
+- name: undo
+  hosts: ansible2
+  gather_facts: no
+  tasks:
+    - name: remvoing firewalld and httpd service
+      dnf:
+        name:
+          - firewalld
+          - httpd
+        state: absent
