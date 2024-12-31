@@ -21,3 +21,8 @@
 
     - name: setting a password #creating a password through the shell module allows for setting an encrypted password without manually encrypting it
       shell: "echo {{pass_01}} | passwd --stdin {{username}}"
+      register: result
+    
+    - name: verification
+      debug:
+        var: result
