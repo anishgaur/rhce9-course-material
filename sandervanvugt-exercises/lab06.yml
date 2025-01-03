@@ -1,0 +1,33 @@
+---
+# Lab06
+
+# Create a playbook that sets a local fact type=production on host ansible1
+# Use an ad-hoc command with a afilter to check that the fact was ceated successfully
+
+- name: lab06
+  gather_facts: no
+  hosts: ansible1
+  tasks:
+    - name: dest check
+      file: 
+        name: /etc/ansible/facts.d
+        state: directory
+    
+    - name: local fact creation
+      copy:
+        content: |
+          [software]
+          type = production
+        dest: "/etc/ansible/facts.d/lab06.fact"
+
+# while fact gathering was disabled in the begining of the playbook, running the setup module forces it
+
+    - name: fact gathering
+      setup:
+
+# while an ad-hoc statement can be used to check if local fact creation was successful as per the original question
+# an easier way would be to use the debug module to display the fact that was created during the previous steps
+
+    - name: print fact
+      debug:
+        var: ansible_facts['ansible_local']['lab06']['software']
