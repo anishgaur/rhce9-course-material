@@ -1,0 +1,33 @@
+---
+# lab07: Write a playbook that writes "You have a second disk." if a second disk was found on a node,
+# and "You have no second disk." in the case that no second disk was found.
+
+# SanderVanVugt's answer to this lab involved the assumption that we know we know the device type (nvme, ssd, SCSI)
+# and used that information to use ansible facts to make the determination if there is a second disk.
+# This approach however makes a lot of assumptions and presents a more rigid way of solving the problem.
+
+# The solution I have presented works in a different way leveraging the shell module, using a simple shell
+# command, storing it the output to make the determination.
+
+- name: lab07
+  gather_facts: no
+  hosts: all
+
+  tasks:
+    - name: checking for number of disks
+      shell: lsblk -o type | grep -i disk | wc -l
+      register: result
+
+#   - name: test
+#    debug:
+#       var: result.stdout
+
+    - name: Second disk present
+      debug:
+        msg: "You have a second disk."
+      when: result.stdout | int > 1
+
+    - name: Second disk not present
+      debug:
+        msg: "You have no second disk"
+      when: result.stdout | int == 1 
